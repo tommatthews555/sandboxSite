@@ -1,37 +1,18 @@
-from flask import Flask
+from flask import (Flask, render_template, url_for, request, redirect)
 from flask_sqlalchemy import SQLAlchemy
-from flask import render_template
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+from models import app, User, Week, Meal, db
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    #db.drop_all()
+    db.create_all()
+    me = User(username="tom", email="tom@tom.tom")
+    db.session.add(me)
+    db.session.commit()
+    users = User.query.all()
+    weeks = Week.query.all()
+    meals = Meal.query.all()
+    return render_template("home.html", users=users, weeks=weeks, meals=meals)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-
-    def __repr__(self):
-        return '<User %r>' % self.username
-
-class Week(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    deliveryDate = db.Column(db.DateTime(), nullable=False)
-
-    def __repr__(self):
-        return '<Week %r>' % self.deliveryDate
-
-class Meal(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(), nullable=False)
-    desc = db.Column(db.String(), nullable=False)
-    gf = db.Column(db.Boolean(), nullable=False, default=False)
-    df = db.Column(db.Boolean(),  nullable=False, default=False)
-    vgt = db.Column(db.Boolean(),  nullable=False, default=False)
-    vgn = db.Column(db.Boolean(),  nullable=False, default=False)
-    
+if __name__ == '__main__':
+    app.run(debug=False, port=5000, host='127.0.0.1')
