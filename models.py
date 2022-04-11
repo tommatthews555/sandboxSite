@@ -1,18 +1,25 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
+from tempfile import mkdtemp
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sandboxSite.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+app.config["SESSION_FILE_DIR"] = mkdtemp()
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(), unique=False, nullable=False)
-    email = db.Column(db.String(), unique=False, nullable=False)
+    name = db.Column(db.String(), unique=False, nullable=False)
+    email = db.Column(db.String(), unique=True, nullable=False)
+    hashPw = db.Column(db.String(), unique=True, nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Name %r;id %r; email %r>' % (self.name, self.id, self.email)
 
 class Week(db.Model):
     id = db.Column(db.Integer, primary_key=True)
