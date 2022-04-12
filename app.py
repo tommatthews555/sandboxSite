@@ -1,22 +1,35 @@
 from flask import (Flask, render_template, url_for, request, redirect, session)
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
-from models import app, User, Week, Meal, db
+from models import app, User, Meal, Order, db
 from helpers import apology, login_required, lookup, usd, twod
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 
+CREATE_FIRST_USER = True
+
 @app.route("/")
 def home():
-    #db.drop_all()
+    db.drop_all()
     db.create_all()
-    #me = User(name="tom", email="tom@tom.tom", hashPw=generate_password_hash("tom"))
-    #db.session.add(me)
-    #db.session.commit()
+    if CREATE_FIRST_USER:
+        me = User(name="tom", email="tom", hashPw=generate_password_hash("tom"))
+        db.session.add(me)
+        db.session.commit()
+        myMeal = Meal(title="First meal", desc="first meal description", gf=True, df=False, vgt=True, vgn=False, archived=False)
+        db.session.add(myMeal)
+        db.session.commit()
+        myOrder = Order(meal1Id=1, userId=1, meal1Qty=12)
+        db.session.add(myOrder)
+        db.session.commit()
     users = User.query.all()
-    weeks = Week.query.all()
     meals = Meal.query.all()
-    return render_template("home.html", users=users, weeks=weeks, meals=meals)
+    return render_template("home.html", users=users, meals=meals)
+
+@app.route("/history")  
+def history():
+    orders = Order.query.filter(Order.userId==session["user_id"])
+    return render_template("orders.html", orders=orders)
 
 # Ensure responses aren't cached
 @app.after_request
@@ -124,6 +137,13 @@ def login():
     else:
         return render_template("login.html")
         
+
+@app.route("/resetPassword/{hash}")
+def resetPassword():
+    if not request.form.get("email"):
+        render_template("resetPassword.html")
+
+
 @app.route("/logout")
 def logout():
     """Log user out"""
