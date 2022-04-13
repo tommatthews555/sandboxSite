@@ -25,16 +25,15 @@ def home():
         db.session.commit()
         myOrder = Order(userId=1)
         myOrder.entries.append(myMeal1)
-        mealOrders = meal_order.query.all()
-        print(mealOrders)
         db.session.commit()
         db.session.commit()
         db.session.add(myOrder)
         db.session.commit()
     users = User.query.all()
     meals = Meal.query.all()
+    orders = Order.query.all()
     # return redirect('/meals-edit')
-    return render_template("home.html", users=users, meals=meals)
+    return render_template("home.html", users=users, meals=meals, orders=orders)
 
 @app.route("/history")  
 def history():

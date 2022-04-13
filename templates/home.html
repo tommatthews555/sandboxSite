@@ -10,8 +10,22 @@
     </div>
     <div>
         <ul>
+            <h1>Users</h1>
             {%for user in users %}
                 <li>{{user.email}}, {{user.name}},{{user.id}}</li>
+            {% endfor %}
+            <h1>Meals</h1>
+            {%for meal in meals %}
+                <li>{{meal.title}}, {{meal.id}}</li>
+            {% endfor %}
+            <h1>Orders</h1>
+            {%for order in orders %}
+                <li>{{order.id}}, {{order.date}},{{order.userId}}</li>
+                <ul>
+                    {% for entry in order.entries %}
+                    <li>{{entry.meal_id}}</li>
+                    {% endfor %}
+                </ul>
             {% endfor %}
         </ul>
     </div>

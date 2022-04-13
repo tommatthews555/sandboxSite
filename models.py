@@ -16,7 +16,7 @@ Session(app)
 meal_order = db.Table('meal_order', 
     db.Column('meal_id', db.Integer, db.ForeignKey('meal.id')),
     db.Column('order_id', db.Integer, db.ForeignKey('order.id')),
-    db.Column('quantity', db.Integer))
+    db.Column('id', db.Integer, primary_key=True))
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
