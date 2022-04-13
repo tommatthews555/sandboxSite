@@ -16,7 +16,7 @@ def home():
         me = User(name="tom", email="tom", hashPw=generate_password_hash("tom"))
         db.session.add(me)
         db.session.commit()
-        myMeal1 = Meal(title="1st meal", desc="first meal description", gf=True, df=False, vgt=True, vgn=False, archived=True, price="11")
+        myMeal1 = Meal(title="Pad Thai", desc="Thailand's best known noodles dish. Rice noodles with egg, green onions, bean sprouts and chopped peanuts", gf=True, df=True, vgt=False, vgn=False, archived=False, price="11")
         myMeal2 = Meal(title="2nd meal", desc="second meal description", gf=True, df=False, vgt=False, vgn=False, archived=False, price="12")
         myMeal3 = Meal(title="3rd meal", desc="third meal description", gf=True, df=True, vgt=True, vgn=False, archived=False, price="11")
         db.session.add(myMeal1)
@@ -34,11 +34,6 @@ def home():
     orders = Order.query.all()
     # return redirect('/meals-edit')
     return render_template("home.html", users=users, meals=meals, orders=orders)
-
-@app.route("/history")  
-def history():
-    orders = Order.query.filter(Order.userId==session["user_id"])
-    return render_template("orders.html", orders=orders)
 
 @app.route("/createOrder")  
 def createOrder():
@@ -88,33 +83,22 @@ def after_request(response):
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    # User reached route via POST (as by submitting a form via POST)
+
     if request.method == "POST":
         session.permanent=True
-
-        # Ensure username was submitted
         if not request.form.get("name"):
             return apology("must provide name", 400)
-
-        # Ensure username was submitted
         if not request.form.get("email"):
             return apology("must provide email", 400)
-
-        # Ensure password was submitted
         elif not request.form.get("password"):
             return apology("must provide password", 400)
-
         elif not request.form.get("confirmation"):
             return apology("must confirm password", 400)
-
         elif request.form.get("confirmation") != request.form.get("password"):
             return apology("passwords no match")
 
-        # users = db.execute("INSERT INTO birthdays (name, month, day) VALUES(?, ?, ?)", name, month, day)
         email=request.form.get("email")
         users = User.query.filter(User.email==email).all()
-        #print(users)
-        #users = db.execute("SELECT * FROM users WHERE username LIKE ?", username)
 
         if len(users) != 0:
             return apology("user exists", 400)
@@ -125,21 +109,15 @@ def register():
                 hashPw=generate_password_hash(request.form.get("password")))
             db.session.add(newUser)
             db.session.commit()
-            #num_existing = db.execute("SELECT * FROM users")
-            #db.execute("INSERT INTO users (id, username, hash) VALUES(?,?,?)", 1 + len(num_existing),
-                       #username, generate_password_hash(request.form.get("password")))
-        # Remember which user has logged in
         entries = User.query.filter(User.email==email).all()
         foundUser = User.query.filter(User.email==email).first()
-        #rows = db.execute("SELECT * FROM users WHERE user = ?", username)
         if len(entries) != 1:
             return apology("Unable to log in", 403)
         session["user_id"] = foundUser.id
 
         return redirect('/')
 
-    # User reached route via GET (as by clicking a link or via redirect)
-    else:
+    else: # User reached route via GET (as by clicking a link or via redirect)
         return render_template("register.html")
 
 
