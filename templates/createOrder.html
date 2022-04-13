@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Meals
+{% endblock %}
+
+{% block main %}
+<div class="container-fluid">
+    {%for meal in meals %}
+    <div class="row my-1 bg-light text-wrap">
+        <div class="col-4 col-md-2 my-1">
+            {{meal.title}}
+        </div>
+        <div class="col-8 col-md-4 my-1">
+            {{meal.desc}}
+        </div>
+        
+        <div class="col-7 col-md-3 my-1" >
+            <h5 style="text-align: left;font-family:'Courier Bold', Courier Bold, monospace;font-style:bold">
+            {% if meal.gf == True %}
+            GF
+            {% else %}&nbsp;&nbsp;{% endif %}
+            {% if meal.df == True %}
+            DF
+            {% else %}&nbsp;&nbsp;{% endif %}
+            {% if meal.vgn == True %}
+            VGN
+            {% else %}&nbsp;&nbsp;&nbsp;{% endif %}
+            {% if meal.vgt == True %}VGT
+            {% else %}&nbsp;&nbsp;&nbsp;{% endif %}
+        </div>
+        <div class="col-2 col-md-1 my-1" >
+            ${{meal.price}}
+        </div>
+        <div class="col-3 col-md-2 my-1" >
+            <div class="def-number-input number-input safari_only">
+            <input style="width:85%; max-width:40" placeholder="qty." class="quantity" min="0" max="10" name="quantity" value="" type="number">
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

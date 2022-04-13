@@ -16,9 +16,9 @@ def home():
         me = User(name="tom", email="tom", hashPw=generate_password_hash("tom"))
         db.session.add(me)
         db.session.commit()
-        myMeal1 = Meal(title="1st meal", desc="first meal description", gf=True, df=False, vgt=True, vgn=False, archived=True)
-        myMeal2 = Meal(title="2nd meal", desc="second meal description", gf=True, df=False, vgt=False, vgn=False, archived=False)
-        myMeal3 = Meal(title="3rd meal", desc="third meal description", gf=True, df=True, vgt=True, vgn=False, archived=False)
+        myMeal1 = Meal(title="1st meal", desc="first meal description", gf=True, df=False, vgt=True, vgn=False, archived=True, price="11")
+        myMeal2 = Meal(title="2nd meal", desc="second meal description", gf=True, df=False, vgt=False, vgn=False, archived=False, price="12")
+        myMeal3 = Meal(title="3rd meal", desc="third meal description", gf=True, df=True, vgt=True, vgn=False, archived=False, price="11")
         db.session.add(myMeal1)
         db.session.add(myMeal2)
         db.session.add(myMeal3)
@@ -39,6 +39,12 @@ def home():
 def history():
     orders = Order.query.filter(Order.userId==session["user_id"])
     return render_template("orders.html", orders=orders)
+
+@app.route("/createOrder")  
+def createOrder():
+    meals = Meal.query.all()
+
+    return render_template("createOrder.html", meals=meals)
 
 @app.route("/archiveMeal", methods=["GET", "POST"])
 def archiveMeal():

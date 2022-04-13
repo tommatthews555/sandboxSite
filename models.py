@@ -38,6 +38,7 @@ class Meal(db.Model):
     vgt = db.Column(db.Boolean(),  nullable=False, default=False)
     vgn = db.Column(db.Boolean(),  nullable=False, default=False)
     archived = db.Column(db.Boolean(), nullable=False, default=False)
+    price = db.Column(db.Integer, nullable=False, default=11)
 
     def __repr__(self):
         return 'Meal ID: %s, Title: %s, Description: %s' % (self.id, self.title, self.desc)

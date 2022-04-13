@@ -32,13 +32,14 @@
                 <div class="collapse navbar-collapse ml-auto" id="navbar">
                     <ul class="navbar-nav text-right ml-auto mt-2">
                         {% if session.user_id %}
-                        <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/meals-edit">Meals</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/createMeal">Create Meal</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/history">&nbsp;History</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/meals-edit">&nbsp;Meals</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/createMeal">&nbsp;Create Meal</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/createOrder">&nbsp;Create Order</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout">&nbsp;Log Out</a></li>
                         {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register">&nbsp;Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login">&nbsp;Log In</a></li>
                         {% endif %}
                     </ul>
                 </div>

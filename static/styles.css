@@ -70,3 +70,13 @@ main img
       margin-right: auto;
       margin-left: auto;
   }
+
+  .row {
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 5px;
+      padding: 5px;
+      /* spacing: 1 px; */
+      border-spacing: 5 px;
+      white-space: nowrap;
+  }
