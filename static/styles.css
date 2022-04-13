@@ -45,4 +45,28 @@ main img
     /* Constrain images on small screens */
     max-width: 100%;
 }
+.form-check {
+    text-align:left;
+  }
 
+  .form-group {
+      text-align: left;
+      min-width: 100%;
+  }
+
+
+  .form-control {
+      min-width: 100%;
+  }
+
+  .pane {
+      background-color:aliceblue;
+      border-radius:20px;
+      border-width: 2px;
+      border-style: solid;
+      border-color:#537fbe;
+      padding: 20px;
+      width: auto;
+      margin-right: auto;
+      margin-left: auto;
+  }

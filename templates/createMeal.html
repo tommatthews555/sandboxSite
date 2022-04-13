@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <div class="container pane" style="max-width: 800px;">
+    <form action="/createMeal" method="post">
+        <div class="form-group" >
+            <label for="mealTitle">Meal Title</label>
+            <input autocomplete="off" autofocus class="form-control input-sm" id="mealTitle" name="mealTitle" placeholder="(e.g.:) Pad Thai" type="text">
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="gf" id="gf">
+            <label class="form-check-label" for="gf">Gluten Free</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="df" id="df">
+            <label class="form-check-label" for="df">Dairy Free</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="vgt" id="vgt">
+            <label class="form-check-label" for="vgt">Vegetarian</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="vgn" id="vgn">
+            <label class="form-check-label" for="vgn">Vegan</label>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" autocomplete="off" name="description" id="description" rows="3" name="Description" placeholder="(e.g.:) Carrot noodles and chicken with peanut sauce " ></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit" style="text-align: center;">Create Meal</button>
+    </form>
+    </div>
+{% endblock %}

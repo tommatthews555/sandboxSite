@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Meals
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col-12"><h2>All Meals</h2></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Meal Name</th>
+                        <th>Meal Description</th>
+                        <th>GF</th>
+                        <th>DF</th>
+                        <th>Vegetarian</th>
+                        <th>Vegan</th>
+                        <th>Archive?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for meal in meals.items %}
+                    <tr>
+                        <td>{{ meal.title }}</td>
+                        <td>{{ meal.desc  }}</td>
+                        <td>{{ meal.gf    }}</td>
+                        <td>{{ meal.df    }}</td>
+                        <td>{{ meal.vgt   }}</td>
+                        <td>{{ meal.vgn   }}</td>
+                        <td>
+                            <form action="/archiveMeal" method="post">
+                                <button name="id" value="{{meal.id}}">
+                                    Archive
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

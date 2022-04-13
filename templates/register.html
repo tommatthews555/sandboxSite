@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+<div class="container pane ml-auto mr-auto" style="max-width: 400px;">
     <form action="/register" method="post">
         <div class="form-group">
             <input autocomplete="off" autofocus class="form-control" name="name" placeholder="Your Name" type="text">
@@ -19,5 +20,5 @@
             <input class="form-control" name="confirmation" placeholder="Confirm Password" type="password">
         </div>
         <button class="btn btn-primary" type="submit">Register</button>
-    </form>
+    </form></div>
 {% endblock %}

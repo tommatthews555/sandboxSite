@@ -16,20 +16,54 @@ def home():
         me = User(name="tom", email="tom", hashPw=generate_password_hash("tom"))
         db.session.add(me)
         db.session.commit()
-        myMeal = Meal(title="First meal", desc="first meal description", gf=True, df=False, vgt=True, vgn=False, archived=False)
-        db.session.add(myMeal)
+        myMeal1 = Meal(title="1st meal", desc="first meal description", gf=True, df=False, vgt=True, vgn=False, archived=True)
+        myMeal2 = Meal(title="2nd meal", desc="second meal description", gf=True, df=False, vgt=False, vgn=False, archived=False)
+        myMeal3 = Meal(title="3rd meal", desc="third meal description", gf=True, df=True, vgt=True, vgn=False, archived=False)
+        db.session.add(myMeal1)
+        db.session.add(myMeal2)
+        db.session.add(myMeal3)
         db.session.commit()
         myOrder = Order(meal1Id=1, userId=1, meal1Qty=12)
         db.session.add(myOrder)
         db.session.commit()
     users = User.query.all()
     meals = Meal.query.all()
+    # return redirect('/meals-edit')
     return render_template("home.html", users=users, meals=meals)
 
 @app.route("/history")  
 def history():
     orders = Order.query.filter(Order.userId==session["user_id"])
     return render_template("orders.html", orders=orders)
+
+@app.route("/archiveMeal", methods=["GET", "POST"])
+def archiveMeal():
+    if request.method == "POST":
+        mealToArchive = Meal.query.filter(Meal.id==request.form.get("id")).first()
+        mealToArchive.archived = True
+        db.session.commit()
+    return redirect('/meals-edit')
+
+@app.route("/createMeal", methods=["POST", "GET"])
+def createMeal():
+    if request.method == "POST":
+        if not request.form.get("mealTitle") or not request.form.get("description"):
+            return("Please complete all fields")
+        gf = not not request.form.get("gf")
+        df = not not request.form.get("df")
+        vgn = not not request.form.get("vgn")
+        vgt = not not request.form.get("vgt")
+        title = request.form.get("mealTitle")
+        desc = request.form.get("description")
+        db.session.add(Meal(title=title, desc=desc, gf=gf, df=df, vgt=vgt, vgn=vgn, archived=False))
+        db.session.commit()
+        return redirect('/createMeal')
+    return render_template("createMeal.html")
+
+@app.route("/meals-edit", methods=["GET", "POST"])
+def mealsEdit():
+    meals = Meal.query.filter(Meal.archived==False).paginate(per_page=2000)
+    return render_template('meals.html', meals=meals)
 
 # Ensure responses aren't cached
 @app.after_request
@@ -131,7 +165,8 @@ def login():
         session["user_id"] = rows[0].id
 
         # Redirect user to home page
-        return redirect("/")
+        return redirect('/meals-edit')
+        # return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
