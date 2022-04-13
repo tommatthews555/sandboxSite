@@ -1,7 +1,7 @@
 from flask import (Flask, render_template, url_for, request, redirect, session)
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
-from models import app, User, Meal, Order, db
+from models import app, User, Meal, Order, db, meal_order
 from helpers import apology, login_required, lookup, usd, twod
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -23,7 +23,12 @@ def home():
         db.session.add(myMeal2)
         db.session.add(myMeal3)
         db.session.commit()
-        myOrder = Order(meal1Id=1, userId=1, meal1Qty=12)
+        myOrder = Order(userId=1)
+        myOrder.entries.append(myMeal1)
+        mealOrders = meal_order.query.all()
+        print(mealOrders)
+        db.session.commit()
+        db.session.commit()
         db.session.add(myOrder)
         db.session.commit()
     users = User.query.all()
