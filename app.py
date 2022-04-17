@@ -14,7 +14,9 @@ def home():
     db.create_all()
     if CREATE_FIRST_USER:
         me = User(name="tom", email="tom", hashPw=generate_password_hash("tom"))
+        me2 = User(name="tom", email="ma.thomask@gmail.com", hashPw=generate_password_hash("tom"))
         db.session.add(me)
+        db.session.add(me2)
         db.session.commit()
         myMeal1 = Meal(title="Pad Thai", desc="Thailand's best known noodles dish. Rice noodles with egg, green onions, bean sprouts and chopped peanuts", gf=True, df=True, vgt=False, vgn=False, archived=False, price="11")
         myMeal2 = Meal(title="2nd meal", desc="second meal description", gf=True, df=False, vgt=False, vgn=False, archived=False, price="12")
@@ -33,17 +35,33 @@ def home():
     meals = Meal.query.all()
     orders = Order.query.all()
     # return redirect('/meals-edit')
-    return render_template("home.html", users=users, meals=meals, orders=orders)
+    if (not not session.get("user_id")):
+        message = session["user_id"]
+        return render_template("home.html", message=message)
+    else:
+        return redirect("/register")
 
 @app.route("/createOrder")  
+@login_required
 def createOrder():
     meals = Meal.query.all()
-
     return render_template("createOrder.html", meals=meals)
+
+@app.route("/addUser", methods=["GET", "POST"])  
+@login_required
+def addUser():
+    if request.method == "POST":
+        message = request.form.get("email")
+        return render_template("home.html", message=message)
+    return render_template("addUser.html")
 
 @app.route("/archiveMeal", methods=["GET", "POST"])
 def archiveMeal():
     if request.method == "POST":
+        for k,v in request.form.items():
+            print (k,v)
+        if (Meal.query.filter(Meal.id==request.form.get("id")).count() < 1):
+            return render_template("home.html", message="there was an issue")
         mealToArchive = Meal.query.filter(Meal.id==request.form.get("id")).first()
         mealToArchive.archived = True
         db.session.commit()
@@ -67,6 +85,8 @@ def createMeal():
 
 @app.route("/meals-edit", methods=["GET", "POST"])
 def mealsEdit():
+    if not isAdmin():
+        return render_template('home.html', message="You do not have access to this page")
     meals = Meal.query.filter(Meal.archived==False).paginate(per_page=2000)
     return render_template('meals.html', meals=meals)
 
@@ -164,7 +184,7 @@ def login():
 @app.route("/resetPassword/{hash}")
 def resetPassword():
     if not request.form.get("email"):
-        render_template("resetPassword.html")
+        return render_template("resetPassword.html")
 
 
 @app.route("/logout")
@@ -183,6 +203,14 @@ def errorhandler(e):
         e = InternalServerError()
     return apology(e.name, e.code)
 
+def isAdmin():
+    if not session.get("user_id"):
+        return False
+
+    admin = User.query.filter(User.email=="ma.thomask@gmail.com").first()
+    if admin.id == session["user_id"]:
+        return True
+    return False
 
 if __name__ == '__main__':
     app.run(debug=False, port=5000, host='127.0.0.1')

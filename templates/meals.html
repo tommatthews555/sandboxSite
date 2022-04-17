@@ -7,7 +7,7 @@
 {% block main %}
 <h2>All Meals</h2>
 <div class="container">
-    <div class="row">
+    <div class="row text-wrap">
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
@@ -18,7 +18,7 @@
                         <th>DF</th>
                         <th>Vegetarian</th>
                         <th>Vegan</th>
-                        <th>Archive?</th>
+                        <th>Delete?</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,10 +30,10 @@
                         <td>{{ meal.df    }}</td>
                         <td>{{ meal.vgt   }}</td>
                         <td>{{ meal.vgn   }}</td>
-                        <td>
-                            <form action="/archiveMeal" method="post">
-                                <button name="id" value="{{meal.id}}">
-                                    Archive
+                        <td style="color:red">
+                            <form action="/archiveMeal" method="post" style="color:red">
+                                <button name="id" value="{{meal.id}}" style="color:red">
+                                    Delete
                                 </button>
                             </form>
                         </td>

@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+<h2>Register a new user into <span style="color: #537fbe;">deals on meals</span>!</h2>
+<p>This form will send an email to this user with a link to create a password.</p>
+<div class="container pane ml-auto mr-auto" style="max-width: 400px;">
+    <form action="/addUser" method="post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="email" placeholder="Email Address" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form></div>
+{% endblock %}

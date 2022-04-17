@@ -22,7 +22,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=False, nullable=False)
     email = db.Column(db.String(), unique=True, nullable=False)
-    hashPw = db.Column(db.String(), unique=True, nullable=False)
+    hashPw = db.Column(db.String(), nullable=False)
     orders = db.relationship('Order', backref='user', lazy=True)
 
     def __repr__(self):
