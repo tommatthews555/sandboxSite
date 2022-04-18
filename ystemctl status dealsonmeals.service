@@ -1,0 +1,16 @@
+Unit dealsonmeals.servicesystemctl.service could not be found.
+Unit status.service could not be found.
+[0;1;31m●[0m dealsonmeals.service - Gunicorn instance for a simple hello world app
+     Loaded: loaded (/etc/systemd/system/dealsonmeals.service; enabled; vendor preset: enabled)
+     Active: [0;1;31mfailed[0m (Result: exit-code) since Sun 2022-04-17 23:27:10 UTC; 29s ago
+    Process: 4889 ExecStart=/home/ubuntu/dealsonmeals/venv/bin/gunicorn -b localhost:8000 app:app [0;1;31m(code=exited, status=203/EXEC)[0m
+   Main PID: 4889 (code=exited, status=203/EXEC)
+
+Apr 17 23:27:10 ip-172-31-22-12 systemd[1]: dealsonmeals.service: Scheduled restart job, restart counter is at 5.
+Apr 17 23:27:10 ip-172-31-22-12 systemd[1]: Stopped Gunicorn instance for a simple hello world app.
+Apr 17 23:27:10 ip-172-31-22-12 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mdealsonmeals.service: Start request repeated too quickly.[0m
+Apr 17 23:27:10 ip-172-31-22-12 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mdealsonmeals.service: Failed with result 'exit-code'.[0m
+Apr 17 23:27:10 ip-172-31-22-12 systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start Gunicorn instance for a simple hello world app.[0m
+Apr 17 23:27:12 ip-172-31-22-12 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mdealsonmeals.service: Start request repeated too quickly.[0m
+Apr 17 23:27:12 ip-172-31-22-12 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mdealsonmeals.service: Failed with result 'exit-code'.[0m
+Apr 17 23:27:12 ip-172-31-22-12 systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start Gunicorn instance for a simple hello world app.[0m

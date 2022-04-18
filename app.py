@@ -37,7 +37,7 @@ def home():
     # return redirect('/meals-edit')
     if (not not session.get("user_id")):
         message = session["user_id"]
-        return render_template("home.html", message=message)
+        return render_template("home.html", message=message, isAdmin=isAdmin())
     else:
         return redirect("/register")
 
@@ -45,14 +45,14 @@ def home():
 @login_required
 def createOrder():
     meals = Meal.query.all()
-    return render_template("createOrder.html", meals=meals)
+    return render_template("createOrder.html", meals=meals, isAdmin=isAdmin())
 
 @app.route("/addUser", methods=["GET", "POST"])  
 @login_required
 def addUser():
     if request.method == "POST":
         message = request.form.get("email")
-        return render_template("home.html", message=message)
+        return render_template("home.html", message=message, isAdmin=isAdmin())
     return render_template("addUser.html")
 
 @app.route("/archiveMeal", methods=["GET", "POST"])
@@ -61,7 +61,7 @@ def archiveMeal():
         for k,v in request.form.items():
             print (k,v)
         if (Meal.query.filter(Meal.id==request.form.get("id")).count() < 1):
-            return render_template("home.html", message="there was an issue")
+            return render_template("home.html", message="there was an issue", isAdmin=isAdmin())
         mealToArchive = Meal.query.filter(Meal.id==request.form.get("id")).first()
         mealToArchive.archived = True
         db.session.commit()
@@ -81,14 +81,14 @@ def createMeal():
         db.session.add(Meal(title=title, desc=desc, gf=gf, df=df, vgt=vgt, vgn=vgn, archived=False))
         db.session.commit()
         return redirect('/createMeal')
-    return render_template("createMeal.html")
+    return render_template("createMeal.html", isAdmin=isAdmin())
 
 @app.route("/meals-edit", methods=["GET", "POST"])
 def mealsEdit():
     if not isAdmin():
         return render_template('home.html', message="You do not have access to this page")
     meals = Meal.query.filter(Meal.archived==False).paginate(per_page=2000)
-    return render_template('meals.html', meals=meals)
+    return render_template('meals.html', meals=meals, isAdmin=isAdmin())
 
 # Ensure responses aren't cached
 @app.after_request
@@ -138,7 +138,7 @@ def register():
         return redirect('/')
 
     else: # User reached route via GET (as by clicking a link or via redirect)
-        return render_template("register.html")
+        return render_template("register.html", isAdmin=isAdmin())
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -173,18 +173,18 @@ def login():
         session["user_id"] = rows[0].id
 
         # Redirect user to home page
-        return redirect('/meals-edit')
+        return redirect('/')
         # return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("login.html")
+        return render_template("login.html", isAdmin=isAdmin())
         
 
 @app.route("/resetPassword/{hash}")
 def resetPassword():
     if not request.form.get("email"):
-        return render_template("resetPassword.html")
+        return render_template("resetPassword.html", isAdmin=isAdmin())
 
 
 @app.route("/logout")

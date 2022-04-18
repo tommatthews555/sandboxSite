@@ -31,10 +31,12 @@
                 </button>
                 <div class="collapse navbar-collapse ml-auto" id="navbar">
                     <ul class="navbar-nav text-right ml-auto mt-2">
-                        {% if session.user_id %}
+                        {% if isAdmin %}
                         <li class="nav-item"><a class="nav-link" href="/meals-edit">&nbsp;Meals</a></li>
                         <li class="nav-item"><a class="nav-link" href="/addUser">&nbsp;Add User</a></li>
                         <li class="nav-item"><a class="nav-link" href="/createMeal">&nbsp;Create Meal</a></li>
+                        {% endif %}
+                        {% if session.user_id %}
                         <li class="nav-item"><a class="nav-link" href="/createOrder">&nbsp;Create Order</a></li>
                         <li class="nav-item"><a class="nav-link" href="/logout">&nbsp;Log Out</a></li>
                         {% else %}
