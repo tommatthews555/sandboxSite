@@ -6,6 +6,44 @@
 
 {% block main %}
     <h3>
-        {{message}}
+        Welcome to Deals on Meals! 
     </h3>
+
+    <div class="row p-1">
+      <div class="col-lg-3 col-6 p-1">
+        <div class="card h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title align-text-top">What is this all about?</h5>
+            <i class="mt-auto h1 bi bi-question-square align-middle"></i>
+            <br>
+            <a href="/" class="btn mt-auto btn-primary center align-bottom">Learn more</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6 p-1">
+        <div class="card h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title align-text-top">I want in!</h5>
+            <i class="mt-auto h1 bi bi-box-arrow-in-up align-middle"></i>
+            <br>
+            <a href="/" class="btn mt-auto btn-primary center align-bottom" >Request access</a>
+          </div>
+        </div>
+      </div>
+        <div class="col-lg-6 col-12 p-1">
+          <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h4>Log me in</h4>
+                <form action="/login" method="post">
+                    <div class="form-group">
+                        <input autocomplete="off" autofocus class="form-control" name="email" placeholder="Email Address" type="text">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" name="password" placeholder="Password" type="password">
+                    </div>
+                    <button class="btn mt-auto btn-primary center align-bottom" type="submit" style="width:100%">Log In</button>
+                </form></div>
+            </div>
+          </div>
+      </div>
 {% endblock %}

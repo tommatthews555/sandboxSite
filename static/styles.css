@@ -65,13 +65,22 @@ main img
       border-width: 2px;
       border-style: solid;
       border-color:#537fbe;
+      border-spacing: 20px;
       padding: 20px;
       width: auto;
-      margin-right: auto;
-      margin-left: auto;
   }
 
-  .row {
+  .card {
+      background-color:aliceblue;
+      border-radius:20px;
+      border-width: 2px;
+      border-style: solid;
+      border-color:#537fbe;
+      width: auto;
+
+  }
+
+  .tablerow{
     background-color:aliceblue;
     border-radius:20px;
     border-width: 2px;

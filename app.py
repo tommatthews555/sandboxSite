@@ -36,10 +36,13 @@ def home():
     orders = Order.query.all()
     # return redirect('/meals-edit')
     if (not not session.get("user_id")):
-        message = session["user_id"]
-        return render_template("home.html", message=message, isAdmin=isAdmin())
+        myId = session["user_id"]
+        myUser = User.query.filter(User.id == myId).first()
+        email = myUser.email
+        return render_template("userHome.html", email=email, isAdmin=isAdmin())
     else:
-        return redirect("/register")
+        # return redirect("/login")
+        return render_template("/home.html", isAdmin=isAdmin())
 
 @app.route("/createOrder")  
 @login_required
@@ -53,7 +56,7 @@ def addUser():
     if request.method == "POST":
         message = request.form.get("email")
         return render_template("home.html", message=message, isAdmin=isAdmin())
-    return render_template("addUser.html")
+    return render_template("addUser.html", isAdmin=isAdmin())
 
 @app.route("/archiveMeal", methods=["GET", "POST"])
 def archiveMeal():
