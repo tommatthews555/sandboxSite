@@ -54,4 +54,4 @@ class Order(db.Model):
 
     def __repr__(self):
         user = User.query.filter(User.id==self.userId).first()
-        return 'Order ID: %r,  userID: %s, DateTime: %s' % (self.id, self.meal1Qty, user.email, self.date)
+        return 'Order ID: %r,  userID: %s, DateTime: %s' % (self.id, user.email, self.date)

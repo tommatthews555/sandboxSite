@@ -5,14 +5,11 @@ from models import app, User, Meal, Order, db, meal_order
 from adminFunctions import *
 from helpers import apology, login_required, lookup, usd, twod
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
-from werkzeug.security import check_password_hash, generate_password_hash
 
 START_DB_FROM_SCRATCH = True
 
 @app.route("/")
 def home():
-    db.drop_all()
-    db.create_all()
     if START_DB_FROM_SCRATCH:
         db_init()
     users = User.query.all()
@@ -23,11 +20,11 @@ def home():
         myUser = User.query.filter(User.id == session["user_id"]).first()
         email = myUser.email
         if (isAdmin()):
-            return render_template("/adminHome.html", isAdmin=isAdmin(), email=email)
+            return render_template("adminHome.html", isAdmin=isAdmin(), email=email)
         return render_template("userHome.html", email=email, isAdmin=isAdmin())
     else:
         # return redirect("/login")
-        return render_template("/home.html", isAdmin=isAdmin())
+        return render_template("guestHome.html", isAdmin=isAdmin())
 
 @app.route("/createOrder")  
 @login_required
@@ -46,32 +43,45 @@ def addUser():
         email = myUser.email
     if request.method == "POST":
         message = request.form.get("email")
-        return render_template("home.html", message=message, isAdmin=isAdmin())
+        return render_template("guestHome.html", message=message, isAdmin=isAdmin())
     return render_template("addUser.html", email=email, isAdmin=isAdmin())
 
 @app.route("/archiveMeal", methods=["GET", "POST"])
 def archiveMeal():
     if request.method == "POST":
-        for k,v in request.form.items():
-            print (k,v)
+        # for k,v in request.form.items():
+        #     print (k,v)
         if (Meal.query.filter(Meal.id==request.form.get("id")).count() < 1):
-            return render_template("home.html", message="there was an issue", isAdmin=isAdmin())
+            return render_template("guestHome.html", message="there was an issue", isAdmin=isAdmin())
         mealToArchive = Meal.query.filter(Meal.id==request.form.get("id")).first()
         mealToArchive.archived = True
         db.session.commit()
     return redirect('/meals-edit')
 
 @app.route("/history", methods=["GET", "POST"])
+@login_required
 def history():
-    if ('user_id' not in session):
-        return redirect('/')
     myUser = User.query.filter(User.id == session["user_id"]).first()
     userId = myUser.id
     email = myUser.email
     users = User.query.filter(User.email.not_in(ADMIN_EMAILS)).paginate(per_page=2000)
-
     orders = Order.query.filter(Order.userId == userId).all()
+    print(orders)
     return render_template('orderHistory.html', orders=orders, email=email, isAdmin=isAdmin())
+
+@app.route("/viewOrder", methods=["GET", "POST"])
+@login_required
+def viewOrder():
+    if request.method == "GET":
+        return redirect('/history')
+    order = Order.query.filter(Order.id == request.form.get("id")).first()
+
+    myUser = User.query.filter(User.id == session["user_id"]).first()
+    userId = myUser.id
+    email = myUser.email
+    # users = User.query.filter(User.email.not_in(ADMIN_EMAILS)).paginate(per_page=2000)
+    # orders = Order.query.filter(Order.userId == userId).all()
+    return render_template('viewOrder.html', order=order, email=email, isAdmin=isAdmin())
 
 # Ensure responses aren't cached
 @app.after_request

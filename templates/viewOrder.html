@@ -14,11 +14,10 @@
                     <tr>
                         <th>User ID</th>
                         <th>Date</th>
-                        <th>Date</th>
+                        <th> </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {%for order in orders %}
                     <tr>
                         <td>{{ order.userId }}</td>
                         <td>{{ order.date  }}</td>
@@ -30,8 +29,10 @@
                             </form>
                         </td>
                     </tr>
-                    {% endfor %}
                 </tbody>
+                {% for entry in order.entries %}
+                <div>{{entry}}</div>
+                {% endfor %}
             </table>
         </div>
     </div>
