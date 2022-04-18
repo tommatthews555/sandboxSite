@@ -41,14 +41,10 @@
                         {% if session.user_id %}
                         <li class="nav-item"><a class="nav-link" href="/createOrder">&nbsp;Create Order</a></li>
                         <li class="nav-item"><a class="nav-link" href="/logout">&nbsp;Log Out</a></li>
-                        {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/register">&nbsp;Register</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/login">&nbsp;Log In</a></li>
                         {% endif %}
                     </ul>
                 </div>
             </nav>
-
         {% if get_flashed_messages() %}
             <header>
                 <div class="alert alert-primary border text-center" role="alert">
@@ -58,6 +54,13 @@
         {% endif %}
 
         <main class="container p-3">
+            <div class="center">
+                {% if email %}
+                <span class="center">You are logged in as {{ email }}</span>
+                {% else %}
+                <span class="center">You are not logged in</span>
+                {% endif %}
+            </div>
             {% block main %}{% endblock %}
         </main>
 

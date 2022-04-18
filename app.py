@@ -2,43 +2,28 @@ from flask import (Flask, render_template, url_for, request, redirect, session)
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from models import app, User, Meal, Order, db, meal_order
+from adminFunctions import *
 from helpers import apology, login_required, lookup, usd, twod
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-CREATE_FIRST_USER = True
+START_DB_FROM_SCRATCH = True
 
 @app.route("/")
 def home():
     db.drop_all()
     db.create_all()
-    if CREATE_FIRST_USER:
-        me = User(name="tom", email="tom", hashPw=generate_password_hash("tom"))
-        me2 = User(name="tom", email="ma.thomask@gmail.com", hashPw=generate_password_hash("tom"))
-        db.session.add(me)
-        db.session.add(me2)
-        db.session.commit()
-        myMeal1 = Meal(title="Pad Thai", desc="Thailand's best known noodles dish. Rice noodles with egg, green onions, bean sprouts and chopped peanuts", gf=True, df=True, vgt=False, vgn=False, archived=False, price="11")
-        myMeal2 = Meal(title="2nd meal", desc="second meal description", gf=True, df=False, vgt=False, vgn=False, archived=False, price="12")
-        myMeal3 = Meal(title="3rd meal", desc="third meal description", gf=True, df=True, vgt=True, vgn=False, archived=False, price="11")
-        db.session.add(myMeal1)
-        db.session.add(myMeal2)
-        db.session.add(myMeal3)
-        db.session.commit()
-        myOrder = Order(userId=1)
-        myOrder.entries.append(myMeal1)
-        db.session.commit()
-        db.session.commit()
-        db.session.add(myOrder)
-        db.session.commit()
+    if START_DB_FROM_SCRATCH:
+        db_init()
     users = User.query.all()
     meals = Meal.query.all()
     orders = Order.query.all()
     # return redirect('/meals-edit')
-    if (not not session.get("user_id")):
-        myId = session["user_id"]
-        myUser = User.query.filter(User.id == myId).first()
+    if ('user_id' in session):
+        myUser = User.query.filter(User.id == session["user_id"]).first()
         email = myUser.email
+        if (isAdmin()):
+            return render_template("/adminHome.html", isAdmin=isAdmin(), email=email)
         return render_template("userHome.html", email=email, isAdmin=isAdmin())
     else:
         # return redirect("/login")
@@ -48,15 +33,21 @@ def home():
 @login_required
 def createOrder():
     meals = Meal.query.all()
-    return render_template("createOrder.html", meals=meals, isAdmin=isAdmin())
+    if ('user_id' in session):
+        myUser = User.query.filter(User.id == session["user_id"]).first()
+        email = myUser.email
+    return render_template("createOrder.html", meals=meals, email=email, isAdmin=isAdmin())
 
 @app.route("/addUser", methods=["GET", "POST"])  
 @login_required
 def addUser():
+    if ('user_id' in session):
+        myUser = User.query.filter(User.id == session["user_id"]).first()
+        email = myUser.email
     if request.method == "POST":
         message = request.form.get("email")
         return render_template("home.html", message=message, isAdmin=isAdmin())
-    return render_template("addUser.html", isAdmin=isAdmin())
+    return render_template("addUser.html", email=email, isAdmin=isAdmin())
 
 @app.route("/archiveMeal", methods=["GET", "POST"])
 def archiveMeal():
@@ -70,28 +61,17 @@ def archiveMeal():
         db.session.commit()
     return redirect('/meals-edit')
 
-@app.route("/createMeal", methods=["POST", "GET"])
-def createMeal():
-    if request.method == "POST":
-        if not request.form.get("mealTitle") or not request.form.get("description"):
-            return("Please complete all fields")
-        gf = not not request.form.get("gf")
-        df = not not request.form.get("df")
-        vgn = not not request.form.get("vgn")
-        vgt = not not request.form.get("vgt")
-        title = request.form.get("mealTitle")
-        desc = request.form.get("description")
-        db.session.add(Meal(title=title, desc=desc, gf=gf, df=df, vgt=vgt, vgn=vgn, archived=False))
-        db.session.commit()
-        return redirect('/createMeal')
-    return render_template("createMeal.html", isAdmin=isAdmin())
+@app.route("/history", methods=["GET", "POST"])
+def history():
+    if ('user_id' not in session):
+        return redirect('/')
+    myUser = User.query.filter(User.id == session["user_id"]).first()
+    userId = myUser.id
+    email = myUser.email
+    users = User.query.filter(User.email.not_in(ADMIN_EMAILS)).paginate(per_page=2000)
 
-@app.route("/meals-edit", methods=["GET", "POST"])
-def mealsEdit():
-    if not isAdmin():
-        return render_template('home.html', message="You do not have access to this page")
-    meals = Meal.query.filter(Meal.archived==False).paginate(per_page=2000)
-    return render_template('meals.html', meals=meals, isAdmin=isAdmin())
+    orders = Order.query.filter(Order.userId == userId).all()
+    return render_template('orderHistory.html', orders=orders, email=email, isAdmin=isAdmin())
 
 # Ensure responses aren't cached
 @app.after_request
@@ -103,7 +83,7 @@ def after_request(response):
 
 # Configure session to use filesystem (instead of signed cookies)
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/requestAccess", methods=["GET", "POST"])
 def register():
     """Register user"""
 
@@ -141,12 +121,11 @@ def register():
         return redirect('/')
 
     else: # User reached route via GET (as by clicking a link or via redirect)
-        return render_template("register.html", isAdmin=isAdmin())
+        return render_template("requestAccess.html", isAdmin=isAdmin())
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """Log user in"""
 
     # Forget any user_id
     session.clear()
@@ -181,7 +160,7 @@ def login():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("login.html", isAdmin=isAdmin())
+        return redirect('/')
         
 
 @app.route("/resetPassword/{hash}")
@@ -205,15 +184,6 @@ def errorhandler(e):
     if not isinstance(e, HTTPException):
         e = InternalServerError()
     return apology(e.name, e.code)
-
-def isAdmin():
-    if not session.get("user_id"):
-        return False
-
-    admin = User.query.filter(User.email=="ma.thomask@gmail.com").first()
-    if admin.id == session["user_id"]:
-        return True
-    return False
 
 if __name__ == '__main__':
     app.run(debug=False, port=5000, host='127.0.0.1')

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Meals
+{% endblock %}
+
+{% block main %}
+<h2>All Past Orders</h2>
+<div class="container">
+    <div class="row text-wrap">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for order in orders.items %}
+                    <tr>
+                        <td>{{ order.userId }}</td>
+                        <td>{{ order.date  }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Meals
+{% endblock %}
+
+{% block main %}
+<h2>All Users</h2>
+<div class="container">
+    <div class="row text-wrap">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Delete?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for user in users.items %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email  }}</td>
+                        <td style="color:red">
+                            <form action="/deleteUser" method="post" style="color:red">
+                                <button name="id" value="{{user.id}}" style="color:red">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
