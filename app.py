@@ -15,7 +15,6 @@ def home():
     users = User.query.all()
     meals = Meal.query.all()
     orders = Order.query.all()
-    # return redirect('/meals-edit')
     if ('user_id' in session):
         myUser = User.query.filter(User.id == session["user_id"]).first()
         email = myUser.email
@@ -26,15 +25,16 @@ def home():
         # return redirect("/login")
         return render_template("guestHome.html", isAdmin=isAdmin())
 
-@app.route("/createOrder")  
+@app.route("/createOrder", methods=["GET", "POST"])  
 @login_required
 def createOrder():
-    meals = Meal.query.all()
+    meals = Meal.query.filter(Meal.archived == False).all()
     if ('user_id' in session):
         myUser = User.query.filter(User.id == session["user_id"]).first()
         email = myUser.email
-    return render_template("createOrder.html", meals=meals, email=email, isAdmin=isAdmin())
-
+    if (request.method == 'GET'):
+        return render_template("createOrder.html", meals=meals, email=email, isAdmin=isAdmin())
+        
 @app.route("/addUser", methods=["GET", "POST"])  
 @login_required
 def addUser():
@@ -45,18 +45,6 @@ def addUser():
         message = request.form.get("email")
         return render_template("guestHome.html", message=message, isAdmin=isAdmin())
     return render_template("addUser.html", email=email, isAdmin=isAdmin())
-
-@app.route("/archiveMeal", methods=["GET", "POST"])
-def archiveMeal():
-    if request.method == "POST":
-        # for k,v in request.form.items():
-        #     print (k,v)
-        if (Meal.query.filter(Meal.id==request.form.get("id")).count() < 1):
-            return render_template("guestHome.html", message="there was an issue", isAdmin=isAdmin())
-        mealToArchive = Meal.query.filter(Meal.id==request.form.get("id")).first()
-        mealToArchive.archived = True
-        db.session.commit()
-    return redirect('/meals-edit')
 
 @app.route("/history", methods=["GET", "POST"])
 @login_required

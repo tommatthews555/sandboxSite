@@ -91,3 +91,13 @@ main img
       border-spacing: 5 px;
       white-space: nowrap;
   }
+
+  .bi-x-circle {
+      color: red;
+  }
+
+  .bi-check-circle {
+      color: green;
+  }
+
+th {position: sticky; top: 0;}

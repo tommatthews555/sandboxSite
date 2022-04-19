@@ -30,6 +30,12 @@ class User(db.Model):
     def __repr__(self):
         return '<Name %r;id %r; email %r>' % (self.name, self.id, self.email)
 
+class Week(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    orders = db.relationship('Order', backref='week', lazy=True)
+    deadlineDate = db.Column(db.DateTime(), nullable=False)
+    deliveryDate = db.Column(db.DateTime(), nullable=False)
+
 class Meal(db.Model):
     __tablename__ = "meal"
     id = db.Column(db.Integer, primary_key=True)
@@ -50,6 +56,7 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime(), nullable=False, default=datetime.datetime.utcnow)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)    
+    weekId = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)    
     entries = db.relationship('Meal', secondary=meal_order, backref='orders')
 
     def __repr__(self):
