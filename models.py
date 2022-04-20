@@ -37,6 +37,7 @@ class User(db.Model):
     orders = db.relationship('Order', backref='user', lazy=True)
     pwResetExp = db.Column(db.DateTime(), nullable=True)
     pwResetHash = db.Column(db.String(), nullable=True)
+    approved = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return '<Name %r;id %r; email %r>' % (self.name, self.id, self.email)

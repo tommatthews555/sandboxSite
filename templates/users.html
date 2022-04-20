@@ -14,6 +14,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Approve?</th>
                         <th>Delete?</th>
                     </tr>
                 </thead>
@@ -22,6 +23,18 @@
                     <tr>
                         <td>{{ user.name }}</td>
                         <td>{{ user.email  }}</td>
+                        <td>
+                            <form action="/approveUser" method="post" >
+                                {% if not user.approved %}
+                                <button name="id" value="{{user.id}}" style="color:rgb(4, 83, 0)">
+                                    Approve
+                                </button>
+                                {% else %}
+                                <div>Approved</div>
+                                {% endif %}
+                            </form>
+
+                        </td>
                         <td style="color:red">
                             <form action="/deleteUser" method="post" style="color:red">
                                 <button name="id" value="{{user.id}}" style="color:red">

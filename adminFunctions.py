@@ -75,6 +75,18 @@ def deleteUser():
         User.query.filter_by(id=request.form.get("id")).delete()
         db.session.commit()
     return redirect('/usersEdit')
+    
+@app.route("/approveUser", methods=["GET", "POST"])
+def approveUser():
+    if request.method == "POST":
+        for k,v in request.form.items():
+            print (k,v)
+        if (User.query.filter(User.id==request.form.get("id")).count() < 1):
+            return render_template("home.html", message="there was an issue", isAdmin=isAdmin())
+        userToApprove = User.query.filter_by(id=request.form.get("id")).first()
+        userToApprove.approved = True
+        db.session.commit()
+    return redirect('/usersEdit')
 
 @app.route("/createMeal", methods=["POST", "GET"])
 @login_required
