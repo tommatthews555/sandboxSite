@@ -6,7 +6,7 @@ from helpers import apology, login_required, lookup, usd, twod
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date
 
-ADMIN_EMAILS = ["ma.thomask@gmail.com", "abc@abc.abc"]
+ADMIN_EMAILS = ["ma.thomask@gmail.com"]
 
 def isAdmin():
     if ('user_id' not in session):
@@ -129,6 +129,23 @@ def db_init():
     myOrder2 = Order(userId=2, weekId=1)
     myOrder3 = Order(userId=1, weekId=1)
     myOrder4 = Order(userId=2, weekId=1)
+    myOrder1.entries.append(myMeal1)
+    myOrder1.entries.append(myMeal2)
+    myOrder1.entries.append(myMeal3)
+    myOrder2.entries.append(myMeal2)
+    myOrder2.entries.append(myMeal3)
+    myOrder2.entries.append(myMeal1)
+    myOrder3.entries.append(myMeal2)
+    myOrder3.entries.append(myMeal3)
+    myOrder3.entries.append(myMeal1)
+    myOrder4.entries.append(myMeal2)
+    myOrder4.entries.append(myMeal3)
+    myOrder4.entries.append(myMeal1)
+    db.session.add(myOrder1)
+    db.session.add(myOrder2)
+    db.session.add(myOrder3)
+    db.session.add(myOrder4)
+    db.session.commit()
     myOrder1.entries.append(myMeal1)
     myOrder1.entries.append(myMeal2)
     myOrder1.entries.append(myMeal3)

@@ -28,6 +28,9 @@ def home():
 @app.route("/createOrder", methods=["GET", "POST"])  
 @login_required
 def createOrder():
+
+    # TODO: flash message if user has already placed an order this week
+
     meals = Meal.query.filter(Meal.archived == False).all()
     if ('user_id' in session):
         myUser = User.query.filter(User.id == session["user_id"]).first()
@@ -52,24 +55,29 @@ def history():
     myUser = User.query.filter(User.id == session["user_id"]).first()
     userId = myUser.id
     email = myUser.email
-    users = User.query.filter(User.email.not_in(ADMIN_EMAILS)).paginate(per_page=2000)
+    # users = User.query.filter(User.email.not_in(ADMIN_EMAILS)).paginate(per_page=2000)
+    weeks = Week.query.all()
     orders = Order.query.filter(Order.userId == userId).all()
     print(orders)
-    return render_template('orderHistory.html', orders=orders, email=email, isAdmin=isAdmin())
+    return render_template('orderHistory.html', orders=orders, weeks=weeks, email=email, isAdmin=isAdmin())
 
 @app.route("/viewOrder", methods=["GET", "POST"])
 @login_required
 def viewOrder():
     if request.method == "GET":
         return redirect('/history')
-    order = Order.query.filter(Order.id == request.form.get("id")).first()
-
+    myOrder = Order.query.filter(Order.id == request.form.get("id")).first()
     myUser = User.query.filter(User.id == session["user_id"]).first()
+    for entry in myOrder.entries:
+        print(entry)
+
+
     userId = myUser.id
     email = myUser.email
+    meals = Meal.query.all()
     # users = User.query.filter(User.email.not_in(ADMIN_EMAILS)).paginate(per_page=2000)
     # orders = Order.query.filter(Order.userId == userId).all()
-    return render_template('viewOrder.html', order=order, email=email, isAdmin=isAdmin())
+    return render_template('viewOrder.html', order=myOrder, meals=meals, email=email, isAdmin=isAdmin())
 
 # Ensure responses aren't cached
 @app.after_request
@@ -100,7 +108,7 @@ def requestAccess():
             msg2 = Message('Deal on Meals access request', sender = 'deals.meals.wheels@gmail.com', recipients = emails)
             msg2.body = "Hi, " + names[0] + ", thank you for your interest! When your request is approved, you\'ll get an email with instructions to sign on."
             mail.send(msg2)
-            return render_template('/requestAccess.html')
+            return redirect('/')
     return render_template('/requestAccess.html')
 
 @app.route("/register", methods=["GET", "POST"])

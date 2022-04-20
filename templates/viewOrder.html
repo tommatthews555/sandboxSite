@@ -5,21 +5,28 @@
 {% endblock %}
 
 {% block main %}
-<h2>All Past Orders</h2>
+<h2>Past Order Details</h2>
+<h5>This order was placed on {{ order.date }}</h5>
 <div class="container">
     <div class="row text-wrap">
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>User ID</th>
-                        <th>Date</th>
+                        <th>Meal Title</th>
+                        <th>Quantity</th>
                         <th> </th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for entry in order.entries %}
                     <tr>
-                        <td>{{ order.userId }}</td>
+                        <td>{{ entry.title }}</td>
+                        <td>{{ entry.qty }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tr>
+                        <!-- <td>{{ order.userId }}</td>
                         <td>{{ order.date  }}</td>
                         <td style="color:red">
                             <form action="/viewOrder" method="post" style="color:red">
@@ -27,12 +34,8 @@
                                     View Order
                                 </button>
                             </form>
-                        </td>
-                    </tr>
+                        </td> -->
                 </tbody>
-                {% for entry in order.entries %}
-                <div>{{entry}}</div>
-                {% endfor %}
             </table>
         </div>
     </div>

@@ -27,7 +27,8 @@ mail = Mail(app)
 meal_order = db.Table('meal_order', 
     db.Column('meal_id', db.Integer, db.ForeignKey('meal.id')),
     db.Column('order_id', db.Integer, db.ForeignKey('order.id')),
-    db.Column('id', db.Integer, primary_key=True))
+    db.Column('id', db.Integer, primary_key=True),
+    db.Column('qty', db.Integer, nullable=False, default=1))
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

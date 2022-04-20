@@ -13,8 +13,10 @@
                 <thead>
                     <tr>
                         <th>User ID</th>
-                        <th>Date</th>
-                        <th>Date</th>
+                        <th>Date of Order Placement</th>
+                        <th>Week ID</th>
+                        <th>Order Deadline Date</th>
+                        <th> </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,6 +24,14 @@
                     <tr>
                         <td>{{ order.userId }}</td>
                         <td>{{ order.date  }}</td>
+                        <td>{{ order.weekId  }}</td>
+                        <td>
+                            {% for week in weeks %} 
+                                {% if order.weekId == week.id %}
+                                {{ week.deadlineDate }}
+                                {% endif %} 
+                            {% endfor %}
+                        </td>
                         <td style="color:red">
                             <form action="/viewOrder" method="post" style="color:red">
                                 <button name="id" value="{{order.id}}" style="color:red">
