@@ -101,3 +101,15 @@ main img
   }
 
 th {position: sticky; top: 0;}
+
+.error {
+    color: red;
+    background-color: red;
+    
+}
+
+.notify {
+    color: black;
+    background-color: rgb(252, 237, 145);
+    
+}

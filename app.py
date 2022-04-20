@@ -1,7 +1,7 @@
-from flask import (Flask, render_template, url_for, request, redirect, session)
+from flask import (Flask, flash, render_template, url_for, request, redirect, session)
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
-from models import app, User, Meal, Order, db, meal_order
+from models import *
 from adminFunctions import *
 from helpers import apology, login_required, lookup, usd, twod
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -10,10 +10,6 @@ START_DB_FROM_SCRATCH = True
 
 @app.route("/")
 def home():
-    msg = Message('Hello', sender = 'deals.meals.wheels@gmail.com', recipients = ['ma.thomask@gmail.com'])
-    msg.body = "Hello Flask message sent from Flask-Mail"
-    mail.send(msg)
-    return "Sent"
     if START_DB_FROM_SCRATCH:
         db_init()
     users = User.query.all()
@@ -83,9 +79,31 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# Configure session to use filesystem (instead of signed cookies)
-
 @app.route("/requestAccess", methods=["GET", "POST"])
+def requestAccess():
+    if request.method == "POST":
+            
+        for k,v in request.form.items():
+            print(k,v)
+        if request.form.get("email"):
+            flash('Thanks for your request! You\'ll get an email now and also if/when your request is approved', category='notify')
+            msg = Message('New user request', sender = 'deals.meals.wheels@gmail.com', recipients = ADMIN_EMAILS)
+            msg.body = "A new user has requested access.\nName: " + request.form.get('name') 
+            msg.body += "\nEmail: " + request.form.get('email')
+            msg.body += "\n\nTo confirm this user, please visit the Manage Users page"
+            mail.send(msg)
+            emails=[]
+            emails.append(request.form.get('email'))
+            print(emails)
+            names=[]
+            names.append(request.form.get('name'))
+            msg2 = Message('Deal on Meals access request', sender = 'deals.meals.wheels@gmail.com', recipients = emails)
+            msg2.body = "Hi, " + names[0] + ", thank you for your interest! When your request is approved, you\'ll get an email with instructions to sign on."
+            mail.send(msg2)
+            return render_template('/requestAccess.html')
+    return render_template('/requestAccess.html')
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
 
