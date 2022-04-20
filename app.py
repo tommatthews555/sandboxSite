@@ -10,6 +10,10 @@ START_DB_FROM_SCRATCH = True
 
 @app.route("/")
 def home():
+    msg = Message('Hello', sender = 'deals.meals.wheels@gmail.com', recipients = ['ma.thomask@gmail.com'])
+    msg.body = "Hello Flask message sent from Flask-Mail"
+    mail.send(msg)
+    return "Sent"
     if START_DB_FROM_SCRATCH:
         db_init()
     users = User.query.all()

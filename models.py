@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from tempfile import mkdtemp
 import datetime
+from flask_mail import Mail, Message
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sandboxSite.db'
@@ -12,6 +14,15 @@ app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+mail= Mail(app)
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'deals.meals.wheels'
+app.config['MAIL_PASSWORD'] = '!2qwaszX'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 meal_order = db.Table('meal_order', 
     db.Column('meal_id', db.Integer, db.ForeignKey('meal.id')),
